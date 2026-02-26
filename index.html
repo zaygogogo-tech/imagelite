@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageLite — 图片压缩 · 文字卡片</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <div class="logo">ImageLite</div>
+        <h1 id="hero-title">智能压缩，一键搞定</h1>
+        <p id="hero-subtitle">选择你的使用场景，剩下的交给我们</p>
+    </header>
+
+    <!-- ===== Segmented Control ===== -->
+    <nav class="segmented-control" id="segmented-control">
+        <div class="seg-track">
+            <div class="seg-thumb" id="seg-thumb"></div>
+            <button class="seg-btn active" data-mode="compress">🖼️ 图片压缩</button>
+            <button class="seg-btn" data-mode="textcard">🔤 文字卡片</button>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+         Section A: 图片压缩（默认可见）
+         ============================================================ -->
+    <section id="compress-section" class="mode-section mode-visible">
+
+        <!-- Upload -->
+        <div class="upload-section">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                </div>
+                <h3>拖拽图片到这里，或点击选择</h3>
+                <p>支持 JPG / PNG / WebP 格式</p>
+                <div class="formats">
+                    <span>JPG</span>
+                    <span>PNG</span>
+                    <span>WebP</span>
+                </div>
+                <div class="file-name" id="file-name"></div>
+            </div>
+            <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp">
+        </div>
+
+        <!-- Workspace -->
+        <div class="workspace" id="workspace">
+            <section class="intent-section">
+                <div class="intent-header">
+                    <h3>选择压缩场景</h3>
+                    <button class="btn-reset" id="btn-reset">重新选择图片</button>
+                </div>
+
+                <div class="dimensions-info" id="dimensions-info"></div>
+
+                <div class="intent-grid" id="intent-grid">
+                    <div class="intent-card selected" data-intent="social">
+                        <span class="intent-emoji">📱</span>
+                        <div class="intent-title">日常分享</div>
+                        <div class="intent-desc">平衡画质与大小，适合社交媒体与聊天发送</div>
+                    </div>
+                    <div class="intent-card" data-intent="limit">
+                        <span class="intent-emoji">🗜️</span>
+                        <div class="intent-title">极限压缩</div>
+                        <div class="intent-desc">最小体积，应对平台严格的文件大小限制</div>
+                    </div>
+                    <div class="intent-card" data-intent="archive">
+                        <span class="intent-emoji">🗃️</span>
+                        <div class="intent-title">高清归档</div>
+                        <div class="intent-desc">保留最佳画质，仅做细微优化</div>
+                    </div>
+                </div>
+
+                <div class="strategy-summary" id="strategy-summary">
+                    <span>当前策略：</span>
+                    <span class="tag" id="tag-format">格式 WebP/JPEG</span>
+                    <span class="tag" id="tag-quality">质量 82%</span>
+                    <span class="tag" id="tag-resize">宽度 ≤ 2048px</span>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-compress" id="btn-compress">
+                        <span class="spinner"></span>
+                        开始压缩
+                    </button>
+                    <button class="btn-download" id="btn-download">
+                        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        下载
+                    </button>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <div class="stats-bar" id="stats-bar">
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">原始大小</div>
+                        <div class="stat-value" id="stat-original">-</div>
+                    </div>
+                    <div class="stat-arrow">→</div>
+                    <div class="stat-item">
+                        <div class="stat-label">压缩后</div>
+                        <div class="stat-value" id="stat-compressed">-</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-label">节省</div>
+                        <div class="stat-value reduction" id="stat-reduction">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <section class="preview-section">
+                <div class="preview-grid">
+                    <div class="preview-card">
+                        <div class="preview-card-header">
+                            <span class="label"><span class="label-dot original"></span>原图</span>
+                            <span class="file-size" id="original-size">-</span>
+                        </div>
+                        <div class="preview-card-body" id="original-preview">
+                            <div class="preview-placeholder">
+                                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                <p>上传图片后预览</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-card-header">
+                            <span class="label"><span class="label-dot compressed"></span>压缩后</span>
+                            <span class="file-size" id="compressed-size">-</span>
+                        </div>
+                        <div class="preview-card-body" id="compressed-preview">
+                            <div class="preview-placeholder">
+                                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                <p>选择场景后点击"开始压缩"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </section>
+
+    <!-- ============================================================
+         Section B: 文字卡片（默认隐藏）
+         ============================================================ -->
+    <section id="text-card-section" class="mode-section mode-hidden">
+
+        <div class="tc-editor-card">
+            <textarea id="card-text-input" placeholder="输入你想分享的灵感..." rows="5"></textarea>
+        </div>
+
+        <!-- 操作栏 -->
+        <div class="tc-toolbar">
+
+            <!-- 情绪调色盘 -->
+            <div class="tc-group">
+                <div class="tc-group-label">情绪</div>
+                <div class="tc-materials" id="tc-materials">
+                    <button class="tc-swatch selected" data-material="snow">
+                        <span class="swatch-fill swatch-snow"></span>
+                        <span class="swatch-name">初雪</span>
+                    </button>
+                    <button class="tc-swatch" data-material="oat">
+                        <span class="swatch-fill swatch-oat"></span>
+                        <span class="swatch-name">燕麦</span>
+                    </button>
+                    <button class="tc-swatch" data-material="matcha">
+                        <span class="swatch-fill swatch-matcha"></span>
+                        <span class="swatch-name">抹茶</span>
+                    </button>
+                    <button class="tc-swatch" data-material="morning">
+                        <span class="swatch-fill swatch-morning"></span>
+                        <span class="swatch-name">晨星</span>
+                    </button>
+                    <button class="tc-swatch" data-material="meteor">
+                        <span class="swatch-fill swatch-meteor"></span>
+                        <span class="swatch-name">陨石</span>
+                    </button>
+                    <button class="tc-swatch" data-material="dark">
+                        <span class="swatch-fill swatch-dark"></span>
+                        <span class="swatch-name">暗黑</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 排版性格 -->
+            <div class="tc-group">
+                <div class="tc-group-label">排版</div>
+                <div class="tc-typography" id="tc-typography">
+                    <button class="tc-typo-btn selected" data-typo="system">现代</button>
+                    <button class="tc-typo-btn" data-typo="serif">优雅</button>
+                    <button class="tc-typo-btn" data-typo="mono">极客</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 预览 -->
+        <div class="tc-preview-wrap">
+            <div class="tc-preview" id="tc-preview">
+                <div class="tc-preview-placeholder">在上方输入文字后实时预览</div>
+            </div>
+        </div>
+
+        <!-- 生成按钮 -->
+        <div class="tc-action-row">
+            <button class="btn-generate" id="btn-generate">
+                <span class="spinner"></span>
+                ✨ 生成并下载卡片
+            </button>
+        </div>
+
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        ImageLite · 所有处理在本地浏览器完成，图片绝不上传
+    </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<!-- 按依赖顺序加载 -->
+<script src="js/core/intentEngine.js"></script>
+<script src="js/core/compressor.js"></script>
+<script src="js/core/textRenderer.js"></script>
+<script src="js/utils/domUtils.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
